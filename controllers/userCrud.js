@@ -1,10 +1,9 @@
-const axios = require('axios');
 const { authSchema } = require('../helpers/validation');
 const { create, findOne, find, deleteOne, updateOne } = require('../utils/connector');
 const { signAccessToken } = require('../helpers/jwtHelper');
 require('dotenv').config();
 
-const baseUrl = process.env.BASE_URL;
+
 
 
 

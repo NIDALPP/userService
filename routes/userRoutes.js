@@ -7,5 +7,5 @@ const { verifyAccessToken } = require("../helpers/jwtHelper");
 
 router.post("/register",controller.register)
 router.post("/login",controller.login)
-router.post("/findUser",verifyAccessToken,controller.findUser)
+router.post("/findUser",controller.findUser)
 module.exports = router
