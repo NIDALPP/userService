@@ -24,7 +24,7 @@ module.exports = {
                 req.body.data
             );
             const user=response?.data
-            const accessToken = await signAccessToken(user._id);
+            const accessToken = await signAccessToken(user._id,user.role);
 
 
             res.status(201).json({user,accessToken});
@@ -49,7 +49,7 @@ module.exports = {
             if (user.password !== password) {
                 return res.status(401).json({ error: "Invalid credentials" });
             }
-            const accessToken = await signAccessToken(user._id);
+            const accessToken = await signAccessToken(user._id,user.role);
             res.status(200).json({ message: "Login successful", user, token: accessToken });
         } catch (error) {
             console.error("Error in login:", error.message || error);
@@ -74,8 +74,6 @@ module.exports = {
             res.status(error.response?.status || 500).send({ error: error.message });
         }
     },
-    
-
     deleteUser: async (req, res) => {
         try {
             const email = req.body.data;
@@ -104,7 +102,7 @@ module.exports = {
             const { email, name, password } = req.body.data;
             const filter={email:filterEmail}
 
-            const response = await updateOne("User", filter, { email: filterEmail, name, password });
+            const response = await updateOne("User", filter, { email, name, password });
             if (!response) {
                 return res.status(500).json({ error: "Failed to update user" });
             }
@@ -117,4 +115,3 @@ module.exports = {
         }
     }
 };
-
