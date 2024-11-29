@@ -3,10 +3,6 @@ const { create, findOne, find, deleteOne, updateOne } = require('../utils/connec
 const { signAccessToken } = require('../helpers/jwtHelper');
 require('dotenv').config();
 
-
-
-
-
 module.exports = {
     register: async (req, res) => {
         const { error } = authSchema.validate(req.body)
@@ -22,11 +18,15 @@ module.exports = {
                 'User',
                 req.body.data
             );
-            const user=response?.data
-            const accessToken = await signAccessToken(user._id,user.role);
+
+            const user = response?.data
+            const accessToken = await signAccessToken(user._id, user.role);
+
+            const cartResponse = await create('Cart', { userId: user._id });
+            const cart = cartResponse?.data;
 
 
-            res.status(201).json({user,accessToken});
+            res.status(201).json({ user, accessToken,cart });
         } catch (error) {
             console.error(error);
             res.status(error.response?.status || 500).send({ error: error.message });
@@ -40,7 +40,8 @@ module.exports = {
             }
             const userResponse = await findOne("User", { email });
             const user = userResponse?.data;
-            console.log("Fetched user:", user);
+
+
             if (!user) {
                 return res.status(404).json({ error: "User not found" });
             }
@@ -48,21 +49,23 @@ module.exports = {
             if (user.password !== password) {
                 return res.status(401).json({ error: "Invalid credentials" });
             }
-            const accessToken = await signAccessToken(user._id,user.role);
-            res.status(200).json({ message: "Login successful", user, token: accessToken });
+            const accessToken = await signAccessToken(user._id, user.role);
+            
+            
+            res.status(200).json({ message: "Login successful", user, token: accessToken,  });
         } catch (error) {
             console.error("Error in login:", error.message || error);
             res.status(error.response?.status || 500).json({ error: "An error occurred during login" });
         }
     },
-    findUser:async(req,res)=>{
+    findUser: async (req, res) => {
         try {
-            const response = await findOne("User", { email: req.body.data.email }); 
+            const response = await findOne("User", { email: req.body.data.email });
             res.status(200).send(response.data);
-            } catch (error) {
-                console.error(error);
-                res.status(error.response?.status || 500).send({ error: error.message });
-                }
+        } catch (error) {
+            console.error(error);
+            res.status(error.response?.status || 500).send({ error: error.message });
+        }
     },
     findAll: async (req, res) => {
         try {
@@ -99,7 +102,7 @@ module.exports = {
                 });
             }
             const { email, name, password } = req.body.data;
-            const filter={email:filterEmail}
+            const filter = { email: filterEmail }
 
             const response = await updateOne("User", filter, { email, name, password });
             if (!response) {

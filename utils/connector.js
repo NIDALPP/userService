@@ -4,9 +4,9 @@ require('dotenv').config();
 const baseUrl = process.env.BASE_URL;
 
 module.exports = {
-    find: async (model) => {
+    find: async (model,filter={}) => {
         try {
-            const result = await axios.post(baseUrl + '/findAll', { model: model });
+            const result = await axios.post(baseUrl + '/findAll', { model: model ,filter:filter});
             return result?.data || null;
         } catch (error) {
             console.error("Error in find:", error.message || error);
