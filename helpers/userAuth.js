@@ -59,10 +59,11 @@ module.exports={
                 req.role = role;
                 req.userId = userId;
                 if (role !== 'user') {
-                    return res.status(403).json({ error: "Access forbidden: Admins only" });
+                    return res.status(403).json({ error: "Access forbidden" });
                 }
 
                 console.log(`${role}`)
+                // return payload
                 next();
             });
         } catch (error) {

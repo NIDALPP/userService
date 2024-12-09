@@ -5,6 +5,6 @@ const { userAuth } = require("../helpers/userAuth");
 
 
 router.post("/register",controller.register)
-router.post("/login",userAuth,controller.login)
-router.post("/findUser",controller.findUser)
+router.post("/login",controller.login)
+router.get("/findUser",controller.findUser)
 module.exports = router

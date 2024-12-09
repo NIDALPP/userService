@@ -20,13 +20,19 @@ module.exports = {
             );
 
             const user = response?.data
-            const accessToken = await signAccessToken(user._id, user.role);
+            const accessToken = await signAccessToken(user.userId, user.role);
 
-            const cartResponse = await create('Cart', { userId: user._id });
-            const cart = cartResponse?.data;
+            let cart;
+            try {
+                const cartResponse = await create('Cart', { userId: user.userId});
+                cart = cartResponse?.data; 
+            } catch (cartError) {
+                console.error("Cart creation failed:", cartError.message);
+                cart = null; 
+            }
 
 
-            res.status(201).json({ user, accessToken,cart });
+            res.status(201).json({ user,accessToken });
         } catch (error) {
             console.error(error);
             res.status(error.response?.status || 500).send({ error: error.message });
@@ -49,7 +55,7 @@ module.exports = {
             if (user.password !== password) {
                 return res.status(401).json({ error: "Invalid credentials" });
             }
-            const accessToken = await signAccessToken(user._id, user.role);
+            const accessToken = await signAccessToken(user.userId, user.role);
             
             
             res.status(200).json({ message: "Login successful", user, token: accessToken,  });

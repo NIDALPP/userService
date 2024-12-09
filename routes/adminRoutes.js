@@ -7,9 +7,9 @@ const { adminAuth } = require('../helpers/userAuth');
 
 
 router.post('/register', userController.register);
-router.post('/findUser',adminAuth,userController.findUser)
+router.get('/findUser',adminAuth,userController.findUser)
 router.get('/findAll', adminAuth, userController.findAll);
-router.post('/deleteUser', adminAuth, userController.deleteUser);
-router.post('/updateUser', adminAuth, userController.updateUser);
+router.delete('/deleteUser', adminAuth, userController.deleteUser);
+router.put('/updateUser', adminAuth, userController.updateUser);
 
 module.exports = router;
